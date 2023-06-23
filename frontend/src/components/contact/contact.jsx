@@ -1,11 +1,40 @@
-import React from "react";
+import {React, useState }from "react";
 import "./contact.css";
+import axios from "axios"
 import { MdOutlineEmail } from "react-icons/md";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { BsWhatsapp } from "react-icons/bs";
 import { useRef } from "react";
 import emailjs from "emailjs-com";
 const Contact = () => {
+
+  const [msg, setMsg] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+
+
+  const submit= async(e)=>{
+    e.preventDefault()
+    setMsg('');
+    setName('');
+    setEmail('');
+  
+    try {
+  
+        await axios.post("http://localhost:4000/", {
+          name,
+          email,
+          msg
+        })
+  
+    }
+    catch(e) {
+      console.log(e)
+    }
+  
+  }
+
+
   const form = useRef();
   const sendEmail = (e) => {
     e.preventDefault();
@@ -24,6 +53,8 @@ const Contact = () => {
       }
     );
   };
+
+
   return (
     <section id="contact">
       <h5>Get in touch</h5>
@@ -55,8 +86,8 @@ const Contact = () => {
           </article>
         </div>
         <form ref={form} onSubmit={sendEmail}>
-          <input type="text" name="name" placeholder="full name" required />
-          <input type="email" name="email" placeholder="your email" required />
+          <input type="text" name="name" placeholder="your name" required value={name} onChange={(e)=>{setName(e.target.value)}} />
+          <input type="email" name="email" placeholder="your email" required value={email} onChange={(e)=>{setEmail(e.target.value)}} />
           <textarea
             name="message"
             id="message"
@@ -64,8 +95,9 @@ const Contact = () => {
             rows="10"
             placeholder="your message"
             required
+            value={msg} onChange={(e)=>{setMsg(e.target.value)}}
           ></textarea>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" onClick={submit}>
             send message
           </button>
         </form>
